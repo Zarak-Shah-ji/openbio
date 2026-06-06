@@ -1,65 +1,131 @@
-import Image from "next/image";
+import Link from "next/link";
+import {
+  BarChart3,
+  Palette,
+  CalendarClock,
+  Mail,
+  Sparkles,
+} from "lucide-react";
+import { createClient } from "@/lib/supabase/server";
 
-export default function Home() {
+const FEATURES = [
+  {
+    icon: BarChart3,
+    title: "Full analytics",
+    desc: "Lifetime views, clicks, click-through rate and a 30-day trend — the stuff other tools charge for.",
+  },
+  {
+    icon: Palette,
+    title: "Custom themes",
+    desc: "Colors, gradients, fonts and button styles. No forced logo, no upsell badge.",
+  },
+  {
+    icon: CalendarClock,
+    title: "Scheduled links",
+    desc: "Set a start and end time and links appear or disappear on their own.",
+  },
+  {
+    icon: Mail,
+    title: "Lead capture",
+    desc: "Collect emails from your visitors and export them to CSV anytime.",
+  },
+];
+
+export default async function Home() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <main className="flex flex-1 flex-col">
+      <header className="mx-auto flex w-full max-w-5xl items-center justify-between px-6 py-5">
+        <span className="text-lg font-bold tracking-tight">
+          Open<span className="text-primary">Bio</span>
+        </span>
+        <nav className="flex items-center gap-2">
+          {user ? (
+            <Link
+              href="/dashboard"
+              className="inline-flex h-10 items-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground shadow-sm hover:bg-primary/90"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+              Dashboard
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="px-3 text-sm font-medium text-muted-foreground hover:text-foreground"
+              >
+                Sign in
+              </Link>
+              <Link
+                href="/signup"
+                className="inline-flex h-10 items-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground shadow-sm hover:bg-primary/90"
+              >
+                Get started
+              </Link>
+            </>
+          )}
+        </nav>
+      </header>
+
+      <section className="mx-auto flex w-full max-w-3xl flex-col items-center px-6 py-20 text-center">
+        <span className="mb-5 inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">
+          <Sparkles className="size-3.5 text-primary" />
+          Open-source link-in-bio
+        </span>
+        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
+          One link for everything.{" "}
+          <span className="text-primary">Premium features, free.</span>
+        </h1>
+        <p className="mt-5 max-w-xl text-lg text-muted-foreground">
+          OpenBio gives you analytics, custom themes, scheduled links and lead
+          capture — the features other link-in-bio tools lock behind a
+          subscription — with no paywall.
+        </p>
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <Link
+            href={user ? "/dashboard" : "/signup"}
+            className="inline-flex h-11 items-center rounded-lg bg-primary px-6 text-sm font-medium text-primary-foreground shadow-sm hover:bg-primary/90"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            {user ? "Go to your dashboard" : "Build your page"}
+          </Link>
+          <Link
+            href="/login"
+            className="inline-flex h-11 items-center rounded-lg border border-border bg-card px-6 text-sm font-medium hover:bg-muted"
           >
-            Documentation
-          </a>
+            Try the demo
+          </Link>
         </div>
-      </main>
-    </div>
+      </section>
+
+      <section className="mx-auto grid w-full max-w-5xl gap-5 px-6 pb-24 sm:grid-cols-2">
+        {FEATURES.map(({ icon: Icon, title, desc }) => (
+          <div
+            key={title}
+            className="rounded-xl border border-border bg-card p-6 shadow-sm"
+          >
+            <div className="mb-3 inline-flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <Icon className="size-5" />
+            </div>
+            <h3 className="font-semibold">{title}</h3>
+            <p className="mt-1 text-sm text-muted-foreground">{desc}</p>
+          </div>
+        ))}
+      </section>
+
+      <footer className="mt-auto border-t border-border">
+        <div className="mx-auto flex w-full max-w-5xl flex-col items-center justify-between gap-2 px-6 py-6 text-sm text-muted-foreground sm:flex-row">
+          <span>
+            Open<span className="text-primary">Bio</span> — free &amp;
+            open-source.
+          </span>
+          <span>
+            An independent project, not affiliated with any other service.
+          </span>
+        </div>
+      </footer>
+    </main>
   );
 }
