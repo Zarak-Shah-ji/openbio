@@ -4,8 +4,9 @@ A free, open-source **link-in-bio** app that ships the features other tools put
 behind a paywall — **analytics, custom themes, link scheduling and lead
 capture** — with no premium tier.
 
-> **Live demo:** _added after deployment_ · **Try it:** sign in with
-> `demo@openbio.app` / `openbio-demo`
+> **Live demo:** **https://openbio-neon.vercel.app** · **Try it:** sign in with
+> `demo@openbio.app` / `openbio-demo` (or view a sample page at
+> [`/demo`](https://openbio-neon.vercel.app/demo))
 
 ---
 
