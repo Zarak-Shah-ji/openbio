@@ -14,9 +14,11 @@ export async function uploadMedia(
   const ext = file.name.split(".").pop()?.toLowerCase() || "png";
   const path = `${userId}/${prefix}-${Date.now()}.${ext}`;
 
+  // Filenames are unique (Date.now), so no upsert is needed — this avoids the
+  // existence check that requires a storage SELECT policy.
   const { error } = await supabase.storage
     .from("media")
-    .upload(path, file, { upsert: true, cacheControl: "3600" });
+    .upload(path, file, { upsert: false, cacheControl: "3600" });
   if (error) throw error;
 
   return supabase.storage.from("media").getPublicUrl(path).data.publicUrl;

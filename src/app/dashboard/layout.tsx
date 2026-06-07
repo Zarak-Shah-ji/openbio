@@ -17,11 +17,14 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex min-h-full flex-col">
-      <header className="border-b border-border bg-card">
-        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-3">
-          <div className="flex items-center gap-6">
-            <Link href="/dashboard" className="text-lg font-bold tracking-tight">
-              Open<span className="text-primary">Bio</span>
+      <header className="border-b-2 border-foreground bg-card">
+        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
+          <div className="flex items-center gap-3 sm:gap-6">
+            <Link
+              href="/dashboard"
+              className="font-display text-lg font-bold tracking-tight"
+            >
+              Open<span className="bg-accent px-1 ring-2 ring-foreground">Bio</span>
             </Link>
             <DashboardNav />
           </div>
@@ -30,9 +33,10 @@ export default async function DashboardLayout({
               href={`/${profile.username}`}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-border px-3 text-sm font-medium hover:bg-muted"
+              className="inline-flex h-9 items-center gap-1.5 rounded-lg border-2 border-foreground bg-card px-3 text-sm font-semibold shadow-hard-sm hover:bg-muted"
             >
-              <ExternalLink className="size-4" />@{profile.username}
+              <ExternalLink className="size-4" />
+              <span className="hidden sm:inline">@{profile.username}</span>
             </a>
             <form action={signOut}>
               <Button type="submit" variant="ghost" size="sm">
@@ -42,7 +46,7 @@ export default async function DashboardLayout({
           </div>
         </div>
       </header>
-      <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-8">
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 sm:py-8">
         {children}
       </main>
     </div>

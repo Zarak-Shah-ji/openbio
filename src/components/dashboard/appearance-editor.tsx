@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Check } from "lucide-react";
+import { Check, ChevronDown } from "lucide-react";
 import { saveTheme } from "@/app/dashboard/actions";
 import { PhonePreview } from "@/components/dashboard/phone-preview";
 import {
@@ -33,12 +33,18 @@ const BUTTON_STYLES: { value: ButtonStyle; label: string }[] = [
   { value: "square", label: "Square" },
   { value: "outline", label: "Outline" },
   { value: "shadow", label: "Shadow" },
+  { value: "hardshadow", label: "Hard shadow" },
+  { value: "soft", label: "Soft" },
+  { value: "underline", label: "Underline" },
 ];
 
 const FONTS: { value: FontFamily; label: string }[] = [
   { value: "sans", label: "Sans" },
   { value: "serif", label: "Serif" },
   { value: "mono", label: "Mono" },
+  { value: "display", label: "Display" },
+  { value: "rounded", label: "Rounded" },
+  { value: "slab", label: "Slab" },
 ];
 
 function ColorField({
@@ -109,6 +115,7 @@ export function AppearanceEditor({
   const [theme, setTheme] = useState<Theme>(initialTheme);
   const [pending, startTransition] = useTransition();
   const [saved, setSaved] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
 
   function set<K extends keyof Theme>(key: K, value: Theme[K]) {
     setTheme((t) => ({ ...t, [key]: value }));
@@ -123,8 +130,30 @@ export function AppearanceEditor({
   }
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
-      <div className="space-y-6">
+    <div className="space-y-6">
+      <div className="lg:hidden">
+        <button
+          type="button"
+          onClick={() => setShowPreview((s) => !s)}
+          className="flex w-full items-center justify-between rounded-lg border-2 border-foreground bg-card px-4 py-2.5 text-sm font-semibold shadow-hard-sm"
+        >
+          {showPreview ? "Hide live preview" : "Show live preview"}
+          <ChevronDown
+            className={cn(
+              "size-4 transition-transform",
+              showPreview && "rotate-180",
+            )}
+          />
+        </button>
+        {showPreview && (
+          <div className="mt-4 flex justify-center">
+            <PhonePreview profile={profile} links={links} theme={theme} />
+          </div>
+        )}
+      </div>
+
+      <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
+        <div className="space-y-6">
         <Card className="space-y-4 p-5">
           <h2 className="font-semibold">Presets</h2>
           <div className="flex flex-wrap gap-2">
@@ -222,9 +251,10 @@ export function AppearanceEditor({
         </div>
       </div>
 
-      <div className="hidden lg:block">
-        <div className="sticky top-8">
-          <PhonePreview profile={profile} links={links} theme={theme} />
+        <div className="hidden lg:block">
+          <div className="sticky top-8">
+            <PhonePreview profile={profile} links={links} theme={theme} />
+          </div>
         </div>
       </div>
     </div>

@@ -21,8 +21,11 @@ export default async function SignupPage() {
     <main className="flex flex-1 items-center justify-center px-4 py-16">
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
-          <Link href="/" className="text-xl font-bold tracking-tight">
-            Open<span className="text-primary">Bio</span>
+          <Link
+            href="/"
+            className="font-display text-xl font-bold tracking-tight"
+          >
+            Open<span className="bg-accent px-1 ring-2 ring-foreground">Bio</span>
           </Link>
           <CardTitle className="mt-2">Create your page</CardTitle>
           <CardDescription>

@@ -3,6 +3,7 @@ import { getProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { LinksEditor } from "@/components/dashboard/links-editor";
 import { PhonePreview } from "@/components/dashboard/phone-preview";
+import { PreviewPanel } from "@/components/dashboard/preview-panel";
 import { visibleLinks } from "@/lib/links";
 import { mergeTheme } from "@/lib/theme";
 
@@ -32,18 +33,16 @@ export default async function DashboardPage() {
         <LinksEditor userId={profile.id} initialLinks={allLinks} />
       </div>
 
-      <div className="hidden lg:block">
-        <div className="sticky top-8">
-          <PhonePreview
-            profile={profile}
-            links={visibleLinks(allLinks)}
-            theme={theme}
-          />
-          <p className="mt-3 text-center text-xs text-muted-foreground">
-            Live preview · only active, in-schedule links show
-          </p>
-        </div>
-      </div>
+      <PreviewPanel>
+        <PhonePreview
+          profile={profile}
+          links={visibleLinks(allLinks)}
+          theme={theme}
+        />
+        <p className="mt-3 text-center text-xs text-muted-foreground">
+          Live preview · only active, in-schedule links show
+        </p>
+      </PreviewPanel>
     </div>
   );
 }

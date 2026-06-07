@@ -23,6 +23,15 @@ describe("mergeTheme", () => {
     expect(t.font).toBe(DEFAULT_THEME.font);
     expect(t.background).toBe("solid");
   });
+
+  it("accepts the newly added button styles and fonts", () => {
+    const t = mergeTheme({ buttonStyle: "hardshadow", font: "display" });
+    expect(t.buttonStyle).toBe("hardshadow");
+    expect(t.font).toBe("display");
+    expect(mergeTheme({ buttonStyle: "underline", font: "slab" })).toMatchObject(
+      { buttonStyle: "underline", font: "slab" },
+    );
+  });
 });
 
 describe("pageBackgroundStyle", () => {
@@ -56,5 +65,20 @@ describe("buttonStyleProps", () => {
     expect(
       buttonStyleProps({ ...DEFAULT_THEME, buttonStyle: "pill" }).borderRadius,
     ).toBe("9999px");
+  });
+
+  it("gives hardshadow buttons a hard offset shadow", () => {
+    const s = buttonStyleProps({ ...DEFAULT_THEME, buttonStyle: "hardshadow" });
+    expect(String(s.boxShadow)).toContain("4px 4px 0");
+  });
+
+  it("makes underline buttons transparent with a bottom border", () => {
+    const s = buttonStyleProps({
+      ...DEFAULT_THEME,
+      buttonStyle: "underline",
+      buttonColor: "#abcdef",
+    });
+    expect(s.backgroundColor).toBe("transparent");
+    expect(String(s.borderBottom)).toContain("#abcdef");
   });
 });

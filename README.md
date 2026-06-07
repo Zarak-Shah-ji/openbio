@@ -4,9 +4,9 @@ A free, open-source **link-in-bio** app that ships the features other tools put
 behind a paywall — **analytics, custom themes, link scheduling and lead
 capture** — with no premium tier.
 
-> **Live demo:** **https://openbio-neon.vercel.app** · **Try it:** sign in with
-> `demo@openbio.app` / `openbio-demo` (or view a sample page at
-> [`/demo`](https://openbio-neon.vercel.app/demo))
+> **Live demo:** **https://openbio-neon.vercel.app** — sign up with email or
+> Google/GitHub, or view a sample public page at
+> [`/demo`](https://openbio-neon.vercel.app/demo).
 
 ---
 
@@ -97,9 +97,14 @@ Open [http://localhost:3000](http://localhost:3000), sign up, claim a username,
 and start adding links.
 
 > **Email confirmation:** new Supabase projects require email confirmation by
-> default. For a frictionless local demo, turn off **Authentication → Sign In /
-> Providers → Confirm email** in the Supabase dashboard, or confirm users via
-> the email link. The hosted demo account is pre-confirmed.
+> default. Set **Authentication → URL Configuration → Site URL** to your
+> deployed domain so confirmation links resolve correctly, or turn off **Confirm
+> email** for a frictionless local setup.
+>
+> **Social login:** to enable the Google / GitHub buttons, turn on those
+> providers under **Authentication → Sign In / Providers** and add their OAuth
+> client ID + secret (provider callback:
+> `https://<your-ref>.supabase.co/auth/v1/callback`).
 
 ## Scripts
 

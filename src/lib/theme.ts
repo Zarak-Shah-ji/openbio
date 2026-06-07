@@ -1,8 +1,22 @@
 import type { CSSProperties } from "react";
 
 export type BackgroundStyle = "solid" | "gradient";
-export type ButtonStyle = "rounded" | "pill" | "square" | "outline" | "shadow";
-export type FontFamily = "sans" | "serif" | "mono";
+export type ButtonStyle =
+  | "rounded"
+  | "pill"
+  | "square"
+  | "outline"
+  | "shadow"
+  | "hardshadow"
+  | "soft"
+  | "underline";
+export type FontFamily =
+  | "sans"
+  | "serif"
+  | "mono"
+  | "display"
+  | "rounded"
+  | "slab";
 
 export interface Theme {
   background: BackgroundStyle;
@@ -51,8 +65,8 @@ export const THEME_PRESETS: { name: string; theme: Theme }[] = [
       textColor: "#ecfdf5",
       buttonColor: "#ecfdf5",
       buttonTextColor: "#064e3b",
-      buttonStyle: "rounded",
-      font: "sans",
+      buttonStyle: "soft",
+      font: "rounded",
     },
   },
   {
@@ -81,6 +95,71 @@ export const THEME_PRESETS: { name: string; theme: Theme }[] = [
       font: "mono",
     },
   },
+  {
+    name: "Brutalist",
+    theme: {
+      background: "solid",
+      bgColor: "#fde047",
+      bgColorSecondary: "#facc15",
+      textColor: "#0a0a0a",
+      buttonColor: "#ffffff",
+      buttonTextColor: "#0a0a0a",
+      buttonStyle: "hardshadow",
+      font: "display",
+    },
+  },
+  {
+    name: "Bubblegum",
+    theme: {
+      background: "gradient",
+      bgColor: "#fbcfe8",
+      bgColorSecondary: "#a78bfa",
+      textColor: "#4a044e",
+      buttonColor: "#ffffff",
+      buttonTextColor: "#4a044e",
+      buttonStyle: "pill",
+      font: "rounded",
+    },
+  },
+  {
+    name: "Ocean",
+    theme: {
+      background: "gradient",
+      bgColor: "#0c4a6e",
+      bgColorSecondary: "#0ea5e9",
+      textColor: "#f0f9ff",
+      buttonColor: "#f0f9ff",
+      buttonTextColor: "#0c4a6e",
+      buttonStyle: "soft",
+      font: "sans",
+    },
+  },
+  {
+    name: "Sand",
+    theme: {
+      background: "solid",
+      bgColor: "#f5f0e6",
+      bgColorSecondary: "#e7dcc4",
+      textColor: "#44342a",
+      buttonColor: "#44342a",
+      buttonTextColor: "#f5f0e6",
+      buttonStyle: "hardshadow",
+      font: "slab",
+    },
+  },
+  {
+    name: "Grape",
+    theme: {
+      background: "gradient",
+      bgColor: "#2e1065",
+      bgColorSecondary: "#7c3aed",
+      textColor: "#f5f3ff",
+      buttonColor: "#f5f3ff",
+      buttonTextColor: "#2e1065",
+      buttonStyle: "underline",
+      font: "display",
+    },
+  },
 ];
 
 const BUTTON_STYLES: ButtonStyle[] = [
@@ -89,8 +168,18 @@ const BUTTON_STYLES: ButtonStyle[] = [
   "square",
   "outline",
   "shadow",
+  "hardshadow",
+  "soft",
+  "underline",
 ];
-const FONTS: FontFamily[] = ["sans", "serif", "mono"];
+const FONTS: FontFamily[] = [
+  "sans",
+  "serif",
+  "mono",
+  "display",
+  "rounded",
+  "slab",
+];
 
 /** Coerce an arbitrary JSON value from the database into a complete Theme. */
 export function mergeTheme(value: unknown): Theme {
@@ -116,10 +205,14 @@ export function mergeTheme(value: unknown): Theme {
   };
 }
 
+// `--font-*` CSS variables are defined on <html> via next/font in layout.tsx.
 export const FONT_STACKS: Record<FontFamily, string> = {
-  sans: 'ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+  sans: 'var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
   serif: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif',
-  mono: 'ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace',
+  mono: 'var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace',
+  display: 'var(--font-display), ui-sans-serif, system-ui, sans-serif',
+  rounded: 'var(--font-rounded), ui-rounded, "Segoe UI", system-ui, sans-serif',
+  slab: 'var(--font-slab), ui-serif, Georgia, "Times New Roman", serif',
 };
 
 /** Inline style for the public page background. */
@@ -134,13 +227,15 @@ export function pageBackgroundStyle(theme: Theme): CSSProperties {
 
 /** Inline style for a link button, derived from the theme's button settings. */
 export function buttonStyleProps(theme: Theme): CSSProperties {
-  const outline = theme.buttonStyle === "outline";
+  const transparentBg =
+    theme.buttonStyle === "outline" || theme.buttonStyle === "underline";
   const base: CSSProperties = {
-    backgroundColor: outline ? "transparent" : theme.buttonColor,
-    color: outline ? theme.buttonColor : theme.buttonTextColor,
-    border: outline
-      ? `2px solid ${theme.buttonColor}`
-      : "2px solid transparent",
+    backgroundColor: transparentBg ? "transparent" : theme.buttonColor,
+    color: transparentBg ? theme.buttonColor : theme.buttonTextColor,
+    border:
+      theme.buttonStyle === "outline"
+        ? `2px solid ${theme.buttonColor}`
+        : "2px solid transparent",
     fontFamily: FONT_STACKS[theme.font],
   };
 
@@ -153,7 +248,21 @@ export function buttonStyleProps(theme: Theme): CSSProperties {
       break;
     case "shadow":
       base.borderRadius = "12px";
-      base.boxShadow = "4px 4px 0 rgba(0,0,0,0.35)";
+      base.boxShadow = "0 6px 18px rgba(0,0,0,0.25)";
+      break;
+    case "hardshadow":
+      base.borderRadius = "8px";
+      base.border = `2px solid ${theme.buttonTextColor}`;
+      base.boxShadow = `4px 4px 0 ${theme.buttonTextColor}`;
+      break;
+    case "soft":
+      base.borderRadius = "18px";
+      base.boxShadow = "0 4px 14px rgba(0,0,0,0.12)";
+      break;
+    case "underline":
+      base.borderRadius = "0px";
+      base.border = "0";
+      base.borderBottom = `2px solid ${theme.buttonColor}`;
       break;
     case "rounded":
     case "outline":

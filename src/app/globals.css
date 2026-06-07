@@ -1,17 +1,25 @@
 @import "tailwindcss";
 
+/*
+ * OpenBio — neo-brutalist design system.
+ * Warm paper, ink-black borders, a violet CTA + electric-yellow accent,
+ * and hard offset shadows. The public bio pages are NOT styled by this — they
+ * use each user's own theme (see src/lib/theme.ts).
+ */
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  --background: #fffcf2; /* warm paper */
+  --foreground: #111111; /* ink */
   --card: #ffffff;
-  --card-foreground: #0f172a;
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
-  --border: #e2e8f0;
-  --input: #e2e8f0;
-  --primary: #4f46e5;
+  --card-foreground: #111111;
+  --muted: #f4f1e6;
+  --muted-foreground: #57534e;
+  --border: #111111; /* ink borders */
+  --input: #111111;
+  --primary: #6d28d9; /* violet */
   --primary-foreground: #ffffff;
-  --ring: #6366f1;
+  --accent: #fde047; /* electric yellow */
+  --accent-foreground: #111111;
+  --ring: #6d28d9;
   --radius: 0.625rem;
 }
 
@@ -26,9 +34,30 @@
   --color-input: var(--input);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
   --color-ring: var(--ring);
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+/* Hard offset shadows — the signature of the brutalist look. */
+@utility shadow-hard {
+  box-shadow: 4px 4px 0 0 var(--foreground);
+}
+@utility shadow-hard-sm {
+  box-shadow: 2px 2px 0 0 var(--foreground);
+}
+@utility shadow-hard-lg {
+  box-shadow: 6px 6px 0 0 var(--foreground);
+}
+
+/* Display + mono accent helpers (fonts loaded via next/font in layout.tsx). */
+.font-display {
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+}
+.font-mono-accent {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
 }
 
 body {
