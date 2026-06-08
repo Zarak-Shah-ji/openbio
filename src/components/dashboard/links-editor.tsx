@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState, useTransition } from "react";
+import { useActionState, useCallback, useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
   DndContext,
@@ -64,6 +64,8 @@ export function LinksEditor({
   initialLinks: LinkRow[];
 }) {
   const router = useRouter();
+  const handleAdded = useCallback(() => router.refresh(), [router]);
+  const handleChange = useCallback(() => router.refresh(), [router]);
   const [items, setItems] = useState(initialLinks);
 
   // Re-sync local order with fresh server data after a router.refresh().
@@ -94,7 +96,7 @@ export function LinksEditor({
 
   return (
     <div className="space-y-5">
-      <AddLink onAdded={() => router.refresh()} />
+      <AddLink onAdded={handleAdded} />
 
       {items.length === 0 ? (
         <Card className="p-10 text-center text-sm text-muted-foreground">
@@ -116,7 +118,7 @@ export function LinksEditor({
                   key={link.id}
                   link={link}
                   userId={userId}
-                  onChange={() => router.refresh()}
+                  onChange={handleChange}
                 />
               ))}
             </div>

@@ -46,7 +46,8 @@ export function normalizeUrl(input: string): string {
 export function isValidHttpUrl(input: string): boolean {
   try {
     const u = new URL(normalizeUrl(input));
-    return u.protocol === "http:" || u.protocol === "https:";
+    if (u.protocol !== "http:" && u.protocol !== "https:") return false;
+    return u.hostname === "localhost" || u.hostname.includes(".");
   } catch {
     return false;
   }

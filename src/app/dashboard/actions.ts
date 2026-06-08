@@ -127,6 +127,49 @@ export async function updateProfile(
   return { ok: true };
 }
 
+export async function changeUsername(
+  _prev: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  const { supabase, userId } = await getUserId();
+  if (!userId) return { error: "You must be signed in." };
+
+  const username = String(formData.get("username") ?? "")
+    .toLowerCase()
+    .trim();
+  const parsed = usernameSchema.safeParse(username);
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Invalid username" };
+  }
+  if (RESERVED_USERNAMES.has(username)) {
+    return { error: "That username is reserved." };
+  }
+
+  const { data: taken } = await supabase
+    .from("profiles")
+    .select("id")
+    .eq("username", username)
+    .neq("id", userId)
+    .maybeSingle();
+  if (taken) return { error: "That username is already taken." };
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({ username })
+    .eq("id", userId);
+  if (error) {
+    return {
+      error: error.message.includes("duplicate")
+        ? "That username is already taken."
+        : error.message,
+    };
+  }
+
+  revalidatePath("/dashboard/settings");
+  revalidatePath("/", "layout");
+  return { ok: true };
+}
+
 export async function setAvatarUrl(url: string | null) {
   const { supabase, userId } = await getUserId();
   if (!userId) return { error: "You must be signed in." };

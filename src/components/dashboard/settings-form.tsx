@@ -1,9 +1,10 @@
 "use client";
 
-import { useActionState, useState, useTransition } from "react";
+import { useActionState, useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Check } from "lucide-react";
 import {
+  changeUsername,
   setAvatarUrl,
   updateProfile,
   type FormState,
@@ -26,6 +27,7 @@ export function SettingsForm({ profile }: { profile: Profile }) {
   return (
     <div className="max-w-xl space-y-6">
       <AvatarSection profile={profile} onChange={() => router.refresh()} />
+      <UsernameSection profile={profile} onChanged={() => router.refresh()} />
 
       <Card className="p-5">
         <form action={formAction} className="space-y-4">
@@ -87,6 +89,66 @@ export function SettingsForm({ profile }: { profile: Profile }) {
         </form>
       </Card>
     </div>
+  );
+}
+
+function UsernameSection({
+  profile,
+  onChanged,
+}: {
+  profile: Profile;
+  onChanged: () => void;
+}) {
+  const [usernameState, usernameAction, usernamePending] = useActionState<FormState, FormData>(
+    changeUsername,
+    {},
+  );
+
+  useEffect(() => {
+    if (usernameState.ok) onChanged();
+  }, [usernameState.ok, onChanged]);
+
+  return (
+    <Card className="p-5">
+      <form action={usernameAction} className="space-y-4">
+        <div>
+          <p className="text-sm font-medium">Username</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">
+            Current URL:{" "}
+            <span className="font-mono">openbio.app/{profile.username}</span>
+          </p>
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="username">New username</Label>
+          <Input
+            id="username"
+            name="username"
+            defaultValue={profile.username}
+            placeholder="your_username"
+            pattern="[a-z0-9_]{3,30}"
+          />
+          <p className="text-xs text-muted-foreground">
+            3–30 characters: lowercase letters, numbers and underscores only.
+          </p>
+        </div>
+        <p className="rounded-md bg-amber-50 px-3 py-2 text-xs text-amber-700 dark:bg-amber-950 dark:text-amber-300">
+          Changing your username will break any existing links shared with the old URL.
+        </p>
+        {usernameState.error && (
+          <p className="text-sm text-red-600">{usernameState.error}</p>
+        )}
+        <div className="flex items-center gap-3">
+          <Button type="submit" disabled={usernamePending}>
+            {usernamePending ? "Saving…" : "Save username"}
+          </Button>
+          {usernameState.ok && (
+            <span className="inline-flex items-center gap-1 text-sm text-emerald-600">
+              <Check className="size-4" /> Saved
+            </span>
+          )}
+        </div>
+      </form>
+    </Card>
   );
 }
 
