@@ -19,7 +19,7 @@ export default async function DashboardLayout({
     <div className="flex min-h-full flex-col">
       <header className="border-b-2 border-foreground bg-card">
         <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
-          <div className="flex items-center gap-3 sm:gap-6">
+          <div className="flex min-w-0 flex-1 items-center gap-3 sm:gap-6">
             <Link
               href="/dashboard"
               className="font-display text-lg font-bold tracking-tight"

@@ -285,17 +285,18 @@ function LinkItem({
             />
           </div>
 
-          <div className="space-y-2 rounded-lg border border-border p-3">
+          <div className="space-y-3 rounded-lg border border-border p-3">
             <div className="flex items-center gap-2 text-sm font-medium">
               <CalendarClock className="size-4 text-primary" />
               Schedule (optional)
             </div>
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div className="space-y-1.5">
-                <Label className="text-xs text-muted-foreground">
-                  Show from
+                <Label htmlFor={`visible-from-${link.id}`} className="text-xs font-medium text-muted-foreground">
+                  Start date &amp; time
                 </Label>
-                <Input
+                <input
+                  id={`visible-from-${link.id}`}
                   type="datetime-local"
                   defaultValue={isoToLocalInput(link.visible_from)}
                   onChange={(e) =>
@@ -305,13 +306,15 @@ function LinkItem({
                       }),
                     )
                   }
+                  className="flex h-10 w-full rounded-lg border-2 border-input bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs text-muted-foreground">
-                  Hide after
+                <Label htmlFor={`visible-until-${link.id}`} className="text-xs font-medium text-muted-foreground">
+                  End date &amp; time
                 </Label>
-                <Input
+                <input
+                  id={`visible-until-${link.id}`}
                   type="datetime-local"
                   defaultValue={isoToLocalInput(link.visible_until)}
                   onChange={(e) =>
@@ -321,6 +324,7 @@ function LinkItem({
                       }),
                     )
                   }
+                  className="flex h-10 w-full rounded-lg border-2 border-input bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 />
               </div>
             </div>

@@ -14,7 +14,7 @@ const ITEMS = [
 export function DashboardNav() {
   const pathname = usePathname();
   return (
-    <nav className="flex items-center gap-1 overflow-x-auto">
+    <nav className="flex min-w-0 items-center gap-1 overflow-x-auto">
       {ITEMS.map((item) => {
         const active =
           item.href === "/dashboard"
