@@ -17,7 +17,7 @@ export function OnboardingForm() {
       <div className="space-y-1.5">
         <Label htmlFor="username">Username</Label>
         <div className="flex items-center rounded-lg border border-input bg-card focus-within:ring-2 focus-within:ring-ring">
-          <span className="pl-3 text-sm text-muted-foreground">openbio/</span>
+          <span className="pl-3 text-sm text-muted-foreground">openlinq/</span>
           <Input
             id="username"
             name="username"

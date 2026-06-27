@@ -39,9 +39,9 @@ const zillaSlab = Zilla_Slab({
 });
 
 export const metadata: Metadata = {
-  title: "OpenBio — your free link-in-bio",
+  title: "OpenLinq — your free link-in-bio",
   description:
-    "OpenBio is a free, open-source link-in-bio page with analytics, custom themes, link scheduling and lead capture — no paywall.",
+    "OpenLinq is a free, open-source link-in-bio page with analytics, custom themes, link scheduling and lead capture — no paywall.",
 };
 
 export default function RootLayout({

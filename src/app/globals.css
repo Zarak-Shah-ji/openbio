@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /*
- * OpenBio — neo-brutalist design system.
+ * OpenLinq — neo-brutalist design system.
  * Warm paper, ink-black borders, a violet CTA + electric-yellow accent,
  * and hard offset shadows. The public bio pages are NOT styled by this — they
  * use each user's own theme (see src/lib/theme.ts).

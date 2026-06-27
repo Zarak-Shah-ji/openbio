@@ -21,10 +21,10 @@ export default async function DashboardLayout({
         <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
           <div className="flex min-w-0 flex-1 items-center gap-3 sm:gap-6">
             <Link
-              href="/dashboard"
+              href="/"
               className="font-display text-lg font-bold tracking-tight"
             >
-              Open<span className="bg-accent px-1 ring-2 ring-foreground">Bio</span>
+              Open<span className="bg-accent px-1 ring-2 ring-foreground">Linq</span>
             </Link>
             <DashboardNav />
           </div>

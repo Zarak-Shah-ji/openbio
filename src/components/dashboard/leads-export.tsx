@@ -14,7 +14,7 @@ export function LeadsExport({
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "openbio-leads.csv";
+    a.download = "openlinq-leads.csv";
     a.click();
     URL.revokeObjectURL(url);
   }

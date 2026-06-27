@@ -45,10 +45,10 @@ export async function generateMetadata({
     .eq("username", username)
     .maybeSingle();
 
-  if (!profile) return { title: "Page not found · OpenBio" };
+  if (!profile) return { title: "Page not found · OpenLinq" };
 
   const name = profile.display_name || profile.username;
-  const title = profile.seo_title || `${name} · OpenBio`;
+  const title = profile.seo_title || `${name} · OpenLinq`;
   const description =
     profile.seo_description || profile.bio || `Links from ${name}.`;
 
@@ -148,7 +148,7 @@ export default async function PublicPage({
 
       <footer className="pb-8 text-center">
         <Link href="/" className="text-xs opacity-70 hover:opacity-100">
-          Made with OpenBio — build your own, free
+          Made with OpenLinq — build your own, free
         </Link>
       </footer>
     </div>

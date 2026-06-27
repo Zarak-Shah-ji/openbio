@@ -30,7 +30,7 @@ export default async function LoginPage({
             href="/"
             className="font-display text-xl font-bold tracking-tight"
           >
-            Open<span className="bg-accent px-1 ring-2 ring-foreground">Bio</span>
+            Open<span className="bg-accent px-1 ring-2 ring-foreground">Linq</span>
           </Link>
           <CardTitle className="mt-2">Welcome back</CardTitle>
           <CardDescription>Sign in to manage your page.</CardDescription>

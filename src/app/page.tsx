@@ -43,9 +43,9 @@ export default async function Home() {
   return (
     <main className="flex flex-1 flex-col">
       <header className="mx-auto flex w-full max-w-5xl items-center justify-between px-5 py-5 sm:px-6">
-        <span className="font-display text-xl font-bold tracking-tight">
-          Open<span className="bg-accent px-1 ring-2 ring-foreground">Bio</span>
-        </span>
+        <Link href="/" className="font-display text-xl font-bold tracking-tight">
+          Open<span className="bg-accent px-1 ring-2 ring-foreground">Linq</span>
+        </Link>
         <nav className="flex items-center gap-2 sm:gap-3">
           {user ? (
             <Link href="/dashboard" className={`${cta} bg-primary text-primary-foreground`}>
@@ -82,7 +82,7 @@ export default async function Home() {
           </span>
         </h1>
         <p className="mt-6 max-w-xl text-lg text-muted-foreground">
-          OpenBio gives you analytics, custom themes, scheduled links and lead
+          OpenLinq gives you analytics, custom themes, scheduled links and lead
           capture — the features other link-in-bio tools lock behind a
           subscription — with no paywall.
         </p>

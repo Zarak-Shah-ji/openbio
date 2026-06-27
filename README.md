@@ -1,22 +1,24 @@
-# OpenBio
+# OpenLinq
 
 A free, open-source **link-in-bio** app that ships the features other tools put
 behind a paywall — **analytics, custom themes, link scheduling and lead
 capture** — with no premium tier.
 
-> **Live demo:** **https://openbio-neon.vercel.app** — sign up with email or
+![OpenLinq homepage](docs/screenshot.png)
+
+> **Live demo:** **https://open-linq.com** — sign up with email or
 > Google/GitHub, or view a sample public page at
-> [`/demo`](https://openbio-neon.vercel.app/demo).
+> [`/demo`](https://open-linq.com/demo).
 
 ---
 
 ## Why this exists
 
 Most link-in-bio products give you the page for free but charge for the parts
-that actually matter. OpenBio reimplements those paid features as free,
+that actually matter. OpenLinq reimplements those paid features as free,
 open-source software:
 
-| Feature | Typically paywalled | In OpenBio |
+| Feature | Typically paywalled | In OpenLinq |
 | --- | --- | --- |
 | **Analytics** — views, clicks, CTR, 30-day trend, top links | 💰 | ✅ Free |
 | **Custom appearance** — colors, gradients, fonts, button styles, no forced branding | 💰 | ✅ Free |
@@ -60,8 +62,8 @@ trademarks, or copied code.
 ### 1. Install
 
 ```bash
-git clone https://github.com/Zarak-Shah-ji/openbio.git
-cd openbio
+git clone https://github.com/Zarak-Shah-ji/openlinq.git
+cd openlinq
 pnpm install
 ```
 

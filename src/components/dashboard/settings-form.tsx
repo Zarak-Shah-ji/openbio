@@ -59,7 +59,7 @@ export function SettingsForm({ profile }: { profile: Profile }) {
                   id="seo_title"
                   name="seo_title"
                   defaultValue={profile.seo_title ?? ""}
-                  placeholder={`${profile.display_name || profile.username} · OpenBio`}
+                  placeholder={`${profile.display_name || profile.username} · OpenLinq`}
                 />
               </div>
               <div className="space-y-1.5">
@@ -115,7 +115,7 @@ function UsernameSection({
           <p className="text-sm font-medium">Username</p>
           <p className="mt-0.5 text-xs text-muted-foreground">
             Current URL:{" "}
-            <span className="font-mono">openbio.app/{profile.username}</span>
+            <span className="font-mono">open-linq.com/{profile.username}</span>
           </p>
         </div>
         <div className="space-y-1.5">
