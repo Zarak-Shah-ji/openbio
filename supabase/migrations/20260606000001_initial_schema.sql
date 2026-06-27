@@ -1,4 +1,4 @@
--- OpenBio initial schema: tables, RLS, public-write RPCs and storage.
+-- OpenLinq initial schema: tables, RLS, public-write RPCs and storage.
 
 -- ===== Tables =====
 create table public.profiles (
