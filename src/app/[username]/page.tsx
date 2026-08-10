@@ -1,17 +1,24 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Star } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { visibleLinks } from "@/lib/links";
+import { partitionSocials } from "@/lib/social";
 import {
-  buttonStyleProps,
   FONT_STACKS,
+  hasHeroHeader,
   mergeTheme,
   pageBackgroundStyle,
+  themeVars,
+  viewportUnitStyle,
 } from "@/lib/theme";
+import { Backdrop } from "@/components/public/backdrop";
+import { Hero, Identity } from "@/components/public/hero";
+import { LinkBlocks } from "@/components/public/link-blocks";
+import { SocialRow } from "@/components/public/social-row";
 import { LeadCapture } from "@/components/public/lead-capture";
 import { ViewBeacon } from "@/components/public/view-beacon";
+import { cn } from "@/lib/utils";
 
 async function getPageData(username: string) {
   const supabase = await createClient();
@@ -41,7 +48,9 @@ export async function generateMetadata({
   const supabase = await createClient();
   const { data: profile } = await supabase
     .from("profiles")
-    .select("username, display_name, bio, seo_title, seo_description, avatar_url")
+    .select(
+      "username, display_name, bio, seo_title, seo_description, avatar_url, theme",
+    )
     .eq("username", username)
     .maybeSingle();
 
@@ -51,6 +60,8 @@ export async function generateMetadata({
   const title = profile.seo_title || `${name} · OpenLinq`;
   const description =
     profile.seo_description || profile.bio || `Links from ${name}.`;
+  // The cover is the page's real hero image, so it makes the better share card.
+  const share = mergeTheme(profile.theme).coverImageUrl ?? profile.avatar_url;
 
   return {
     title,
@@ -58,7 +69,7 @@ export async function generateMetadata({
     openGraph: {
       title,
       description,
-      images: profile.avatar_url ? [profile.avatar_url] : [],
+      images: share ? [share] : [],
     },
   };
 }
@@ -75,82 +86,83 @@ export default async function PublicPage({
   const { profile, links } = data;
   const theme = mergeTheme(profile.theme);
   const shown = visibleLinks(links);
-  const name = profile.display_name || `@${profile.username}`;
+  const { socials, rest } = partitionSocials(shown, theme.socialRow);
+  const glassy = theme.surface !== "flat";
 
   return (
     <div
-      className="flex flex-1 flex-col"
+      className="ob-page flex flex-1 flex-col"
       style={{
         ...pageBackgroundStyle(theme),
+        ...themeVars(theme),
         color: theme.textColor,
         fontFamily: FONT_STACKS[theme.font],
         minHeight: "100dvh",
+        ...viewportUnitStyle("1dvh"),
       }}
     >
+      <Backdrop theme={theme} />
       <ViewBeacon username={profile.username} />
 
-      <main className="mx-auto flex w-full max-w-md flex-1 flex-col px-5 py-12">
-        <div className="flex flex-col items-center text-center">
-          {profile.avatar_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={profile.avatar_url}
-              alt={name}
-              className="size-24 rounded-full object-cover shadow-lg"
-            />
-          ) : (
-            <div className="flex size-24 items-center justify-center rounded-full bg-black/20 text-3xl font-bold shadow-lg">
-              {name.charAt(0).toUpperCase()}
-            </div>
-          )}
-          <h1 className="mt-4 text-xl font-semibold">{name}</h1>
-          {profile.bio && (
-            <p className="mt-1 max-w-xs text-sm opacity-80">{profile.bio}</p>
-          )}
-        </div>
+      <div className="ob-content flex flex-1 flex-col">
+        {hasHeroHeader(theme) && <Hero theme={theme} profile={profile} />}
 
-        <div className="mt-8 flex flex-col gap-3">
-          {shown.length === 0 ? (
-            <p className="text-center text-sm opacity-70">No links yet.</p>
-          ) : (
-            shown.map((link) => (
-              <a
-                key={link.id}
-                href={`/api/r/${link.id}`}
-                rel="noopener"
-                className="flex items-center gap-3 px-4 py-3.5 text-sm font-medium shadow-sm transition-transform hover:-translate-y-0.5"
-                style={buttonStyleProps(theme)}
-              >
-                {link.thumbnail_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={link.thumbnail_url}
-                    alt=""
-                    className="size-7 shrink-0 rounded-md object-cover"
-                  />
-                ) : (
-                  link.is_featured && <Star className="size-4 shrink-0" />
-                )}
-                <span className="flex-1 truncate text-center">{link.title}</span>
-                {link.thumbnail_url && <span className="size-7 shrink-0" />}
-              </a>
-            ))
+        <main
+          className={cn(
+            "mx-auto flex w-full max-w-md flex-1 flex-col px-5 pb-12",
+            theme.header === "classic" && "pt-12",
+            theme.header === "hero" && "pt-6",
+            theme.header === "immersive" && "pt-8",
+            theme.header === "banner" && "ob-below-banner",
           )}
-        </div>
+        >
+          {/* `classic` keeps the avatar with the text; the full-bleed headers
+              have already shown the photo, so only the text is left — except
+              `immersive`, which set it over the image itself. */}
+          {theme.header === "classic" && <Hero theme={theme} profile={profile} />}
+          {(theme.header === "hero" || theme.header === "banner") && (
+            <Identity profile={profile} />
+          )}
 
-        <div className="mt-8 rounded-xl border border-current/20 bg-white/5 p-4">
-          <p className="mb-2 text-center text-sm font-medium">
-            Subscribe for updates
-          </p>
-          <LeadCapture username={profile.username} theme={theme} />
-        </div>
-      </main>
+          <SocialRow
+            items={socials}
+            hrefFor={(link) => `/api/r/${link.id}`}
+          />
 
-      <footer className="pb-8 text-center">
-        <Link href="/" className="text-xs opacity-70 hover:opacity-100">
-          Made with OpenLinq — build your own, free
-        </Link>
-      </footer>
+          <div className="mt-8">
+            {shown.length === 0 ? (
+              <p className="text-center text-sm opacity-70">No links yet.</p>
+            ) : (
+              <LinkBlocks
+                links={rest}
+                theme={theme}
+                hrefFor={(link) => `/api/r/${link.id}`}
+              />
+            )}
+          </div>
+
+          <div
+            className={cn(
+              "ob-panel mt-8 rounded-2xl p-4",
+              glassy && "ob-panel-glass",
+            )}
+          >
+            <p className="mb-2 text-center text-sm font-medium">
+              Subscribe for updates
+            </p>
+            <LeadCapture username={profile.username} theme={theme} />
+          </div>
+        </main>
+
+        <footer className="pb-8 text-center">
+          <Link
+            href="/"
+            className="text-xs opacity-60 transition-opacity hover:opacity-100"
+          >
+            Made with OpenLinq — build your own, free
+          </Link>
+        </footer>
+      </div>
     </div>
   );
 }

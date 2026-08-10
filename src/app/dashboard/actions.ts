@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { isValidHttpUrl, normalizeUrl } from "@/lib/links";
-import { mergeTheme, type Theme } from "@/lib/theme";
+import { mergeTheme, SIGNATURE_THEME, type Theme } from "@/lib/theme";
 import type { Database, Json } from "@/lib/database.types";
 
 type LinkUpdate = Database["public"]["Tables"]["links"]["Update"];
@@ -74,6 +74,9 @@ export async function claimUsername(
     id: userId,
     username,
     display_name: username,
+    // New pages start on the signature look rather than the bare baseline.
+    // Existing profiles are untouched — their stored theme still wins.
+    theme: SIGNATURE_THEME as unknown as Json,
   });
   if (error) {
     return {

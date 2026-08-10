@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { buttonStyleProps, type Theme } from "@/lib/theme";
+import { buttonStyleProps, surfaceClassName, type Theme } from "@/lib/theme";
+import { cn } from "@/lib/utils";
 
 type Status = "idle" | "loading" | "done" | "error";
 
@@ -53,7 +54,10 @@ export function LeadCapture({
       <button
         type="submit"
         disabled={status === "loading"}
-        className="shrink-0 px-4 py-2 text-sm font-medium disabled:opacity-60"
+        className={cn(
+          "shrink-0 px-4 py-2 text-sm font-medium disabled:opacity-60",
+          surfaceClassName(theme),
+        )}
         style={buttonStyleProps(theme)}
       >
         {status === "loading" ? "…" : "Subscribe"}
