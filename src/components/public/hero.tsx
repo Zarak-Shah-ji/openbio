@@ -56,10 +56,19 @@ export function Hero({
     >
       <div className="ob-hero-media" style={heroMaskStyle(theme)}>
         {image ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={image} alt="" className="ob-hero-img" />
+          <>
+            {/* A wide screen turns the hero into a letterbox strip, and
+                `cover` would zoom a portrait photo until only a slice of the
+                subject fits. The sharp copy therefore keeps a phone-shaped
+                crop box, and a blurred copy of the same file fills the space
+                either side of it — same image, so there is no seam to see. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={image} alt="" aria-hidden className="ob-hero-blur" />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={image} alt="" className="ob-hero-img" />
+          </>
         ) : (
-          <div className="ob-hero-img ob-hero-fallback" />
+          <div className="ob-hero-fallback" />
         )}
         {theme.heroDim > 0 && (
           <div className="ob-hero-scrim" style={heroDimStyle(theme)} />

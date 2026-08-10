@@ -135,7 +135,7 @@ export const DEFAULT_THEME: Theme = {
   header: "classic",
   coverImageUrl: null,
   heroHeight: 40,
-  heroFade: 62,
+  heroFade: 50,
   heroDim: 0,
   linkLayout: "row",
   socialRow: false,
@@ -162,7 +162,7 @@ export const SIGNATURE_THEME: Theme = {
   avatarRing: true,
   header: "hero",
   heroHeight: 42,
-  heroFade: 58,
+  heroFade: 45,
   heroDim: 10,
   linkLayout: "card",
   socialRow: true,
@@ -198,7 +198,7 @@ export const THEME_PRESETS: { name: string; theme: Theme; showcase?: boolean }[]
         avatarRing: true,
         header: "immersive",
         heroHeight: 46,
-        heroFade: 52,
+        heroFade: 46,
         heroDim: 32,
         linkLayout: "grid",
         socialRow: true,
@@ -227,7 +227,7 @@ export const THEME_PRESETS: { name: string; theme: Theme; showcase?: boolean }[]
         avatarRing: true,
         header: "banner",
         heroHeight: 34,
-        heroFade: 74,
+        heroFade: 64,
         heroDim: 20,
         linkLayout: "cover",
         socialRow: true,
@@ -256,7 +256,7 @@ export const THEME_PRESETS: { name: string; theme: Theme; showcase?: boolean }[]
         avatarRing: true,
         header: "hero",
         heroHeight: 44,
-        heroFade: 55,
+        heroFade: 45,
         heroDim: 15,
         linkLayout: "card",
         socialRow: true,
@@ -285,7 +285,7 @@ export const THEME_PRESETS: { name: string; theme: Theme; showcase?: boolean }[]
         avatarRing: false,
         header: "banner",
         heroHeight: 32,
-        heroFade: 80,
+        heroFade: 70,
         heroDim: 0,
         linkLayout: "grid",
         socialRow: true,
@@ -314,7 +314,7 @@ export const THEME_PRESETS: { name: string; theme: Theme; showcase?: boolean }[]
         avatarRing: true,
         header: "hero",
         heroHeight: 40,
-        heroFade: 50,
+        heroFade: 42,
         heroDim: 0,
         linkLayout: "cover",
         socialRow: true,
@@ -776,19 +776,40 @@ export function viewportUnitStyle(unit: string): CSSProperties {
  * of the phone frame, so "40% of the screen" means the same thing in both.
  */
 export function heroStyle(theme: Theme): CSSProperties {
+  // Published as a variable as well as a height: the photo inside uses it to
+  // keep its crop box the same shape on a wide screen as on a phone.
   return {
-    height: `calc(${theme.heroHeight} * var(--ob-vh, 1dvh))`,
-  };
+    "--ob-hero-h": `calc(${theme.heroHeight} * var(--ob-vh, 1dvh))`,
+    height: "var(--ob-hero-h)",
+  } as CSSProperties;
 }
 
 /**
  * Mask that dissolves the bottom of the photo into the page. `heroFade` is
  * where the dissolve begins as a percentage of the photo's height, so 100 is a
  * hard edge and 40 fades across most of it.
+ *
+ * The ramp is an eased curve rather than a straight line. A linear fade is
+ * still ~13% opaque a few pixels before it ends and then stops dead, which the
+ * eye reads as a hard line across the photo — the exact seam the mask exists
+ * to remove. Smoothstep is flat at both ends, so the photo leaves and arrives
+ * without an edge.
  */
+const SMOOTHSTEP_STOPS = 10;
+
 export function heroMaskStyle(theme: Theme): CSSProperties {
   if (theme.heroFade >= 100) return {};
-  const gradient = `linear-gradient(to bottom, #000 0%, #000 ${theme.heroFade}%, transparent 100%)`;
+
+  const span = 100 - theme.heroFade;
+  const stops = ["#000 0%"];
+  for (let i = 0; i <= SMOOTHSTEP_STOPS; i++) {
+    const t = i / SMOOTHSTEP_STOPS;
+    const alpha = 1 - t * t * (3 - 2 * t);
+    const position = theme.heroFade + span * t;
+    stops.push(`rgba(0,0,0,${alpha.toFixed(3)}) ${position.toFixed(2)}%`);
+  }
+
+  const gradient = `linear-gradient(to bottom, ${stops.join(", ")})`;
   return {
     WebkitMaskImage: gradient,
     maskImage: gradient,

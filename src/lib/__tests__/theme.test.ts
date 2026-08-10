@@ -198,14 +198,43 @@ describe("hero header", () => {
   });
 
   it("sizes the hero in viewport units the preview can redefine", () => {
-    const s = heroStyle({ ...DEFAULT_THEME, heroHeight: 42 });
-    expect(s.height).toBe("calc(42 * var(--ob-vh, 1dvh))");
+    const s = heroStyle({ ...DEFAULT_THEME, heroHeight: 42 }) as Record<
+      string,
+      string
+    >;
+    // Published as a variable too, so the photo can shape its crop box from it.
+    expect(s["--ob-hero-h"]).toBe("calc(42 * var(--ob-vh, 1dvh))");
+    expect(s.height).toBe("var(--ob-hero-h)");
   });
 
-  it("masks the photo into the page, and skips the mask at a hard edge", () => {
-    const faded = heroMaskStyle({ ...DEFAULT_THEME, heroFade: 60 });
-    expect(String(faded.maskImage)).toContain("60%");
+  it("skips the mask entirely at a hard edge", () => {
     expect(heroMaskStyle({ ...DEFAULT_THEME, heroFade: 100 })).toEqual({});
+  });
+
+  it("eases the fade so neither end of it reads as a line", () => {
+    const mask = String(
+      heroMaskStyle({ ...DEFAULT_THEME, heroFade: 60 }).maskImage,
+    );
+    // The ramp spans from where the fade starts to the very bottom...
+    expect(mask).toContain("60.00%");
+    expect(mask).toContain("rgba(0,0,0,0.000) 100.00%");
+
+    const alphas = [...mask.matchAll(/rgba\(0,0,0,([\d.]+)\)/g)].map((m) =>
+      Number(m[1]),
+    );
+    expect(alphas[0]).toBe(1);
+    expect(alphas.at(-1)).toBe(0);
+    // ...and it is monotonic, so the photo never brightens on the way out.
+    for (let i = 1; i < alphas.length; i++) {
+      expect(alphas[i]).toBeLessThan(alphas[i - 1]);
+    }
+    // Smoothstep is flat at both ends: the first and last steps move far less
+    // than the middle one. A straight line would make all three equal, which
+    // is what produced the visible seam.
+    const first = alphas[0] - alphas[1];
+    const middle = alphas[4] - alphas[6];
+    expect(first).toBeLessThan(middle);
+    expect(alphas.at(-2)! - alphas.at(-1)!).toBeLessThan(middle);
   });
 
   it("clamps the hero sliders", () => {
